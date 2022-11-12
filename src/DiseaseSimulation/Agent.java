@@ -42,8 +42,8 @@ public class Agent extends Thread{
                     }
                 }
                 else{
-                    boolean nowSick = checkExposed();
-                    if(nowSick){
+                    boolean infected = checkExposed();
+                    if(infected){
                         vulnerable = true;
                         sleep(1000L * incubation);
                         vulnerable = false;
@@ -51,6 +51,8 @@ public class Agent extends Thread{
                     }
                 }
             }
+
+            sleep(3);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -67,9 +69,12 @@ public class Agent extends Thread{
     }
 
     public boolean checkExposed(){
-        // CHECKS IF AGENTS IN PROXIMITY ARE SICK
+        for(int i = 0; i < agentsInExposureDistance.size();){
+            if(agentsInExposureDistance.get(i).sick){
+                return true;
+            }
+        }
         return false;
     }
-
 
 }
