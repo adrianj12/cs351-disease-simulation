@@ -3,9 +3,7 @@ package DiseaseSimulation;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Field {
 
@@ -106,14 +104,31 @@ public class Field {
             double singleColumnHeight = ((double) width) / ((double) columns);
             int agentDistanceColumns = (int) (exposureDistance / singleColumnHeight);
 
-            // CODE TO RANDOMIZE INITIAL SICK LOCATIONS WILL GO HERE
-            boolean sick = false;
-
+            ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
                     if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
-                        Agent agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, sick);
-                        allAgents.add(agent);
+                        allAgentsIndexRandomized.add(allAgentsIndexRandomized.size());
+                    }
+                }
+            }
+            Collections.shuffle(allAgentsIndexRandomized);
+            HashSet<Integer> sickAgentIndexes = new HashSet<>();
+            for(int i = 0; i < initialSick; i++) sickAgentIndexes.add(allAgentsIndexRandomized.get(i));
+
+            int agentCounter = 0;
+            for (int i = 0; i < rows + 1; i++) {
+                for (int j = 0; j < columns + 1; j++) {
+                    if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
+                        if(initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
+                            Agent agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
+                            allAgents.add(agent);
+                        }
+                        else{
+                            Agent agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
+                            allAgents.add(agent);
+                        }
+                        agentCounter++;
                     }
                 }
             }
@@ -125,8 +140,9 @@ public class Field {
 
         findAgentsInProximity(exposureDistance);
 
-        for(int i = 0; i < allAgents.get(0).agentsInExposureDistance.size(); i++) {
-            System.out.print(allAgents.get(0).agentsInExposureDistance.get(i));
+
+        for(int i = 0; i < allAgents.get(3).agentsInExposureDistance.size(); i++) {
+            System.out.print(allAgents.get(3).agentsInExposureDistance.get(i));
             System.out.print("  ");
         }
     }
@@ -138,6 +154,11 @@ public class Field {
                 double distanceXAxis = allAgents.get(j).positionX - allAgents.get(i).positionX;
                 double distanceYAxis = allAgents.get(j).positionY - allAgents.get(i).positionY;
                 double totalDistance = Math.sqrt(Math.pow(distanceXAxis, 2) + Math.pow(distanceYAxis, 2));
+
+                if(totalDistance <= exposureDistance){
+                    allAgents.get(i).agentsInExposureDistance.add(allAgents.get(j));
+                    allAgents.get(j).agentsInExposureDistance.add(allAgents.get(i));
+                }
             }
         }
     }

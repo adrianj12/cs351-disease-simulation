@@ -17,7 +17,7 @@ public class Agent extends Thread{
     public boolean immune = false;
     public boolean dead = false;
 
-    ArrayList<Integer> agentsInExposureDistance = new ArrayList<>();
+    ArrayList<Agent> agentsInExposureDistance = new ArrayList<>();
 
     public Agent(int positionX, int positionY, int exposureDistance, int incubation, int sickness, double recover, boolean sick){
         this.positionX = positionX;
@@ -42,8 +42,8 @@ public class Agent extends Thread{
                     }
                 }
                 else{
-                    boolean nowSick = checkExposed();
-                    if(nowSick){
+                    boolean infected = checkExposed();
+                    if(infected){
                         vulnerable = true;
                         sleep(1000L * incubation);
                         vulnerable = false;
@@ -69,9 +69,12 @@ public class Agent extends Thread{
     }
 
     public boolean checkExposed(){
-        // CHECKS IF AGENTS IN PROXIMITY ARE SICK
+        for(int i = 0; i < agentsInExposureDistance.size();){
+            if(agentsInExposureDistance.get(i).sick){
+                return true;
+            }
+        }
         return false;
     }
-
 
 }
