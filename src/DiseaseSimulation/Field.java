@@ -86,6 +86,10 @@ public class Field {
             System.out.println("File not found");
             System.out.println("Please refer to README to correctly run program.");
             System.exit(1);
+        } catch (InputMismatchException e){
+            System.out.println("There was an input mismatch error.");
+            System.out.println("Please refer to README to correctly run program.");
+            System.exit(1);
         }
 
         this.width = width;
@@ -109,6 +113,7 @@ public class Field {
             double singleColumnHeight = ((double) width) / ((double) columns);
             int agentDistanceColumns = (int) (exposureDistance / singleColumnHeight);
 
+            // randomizing where sick agents will be on field
             ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
@@ -138,7 +143,7 @@ public class Field {
                 }
             }
         } else if (agentLocationType == 'r') {
-            // USE DISTANCE FORMULA TO CALCULATE THE AGENTS IN PROXIMITY
+
         } else {
 
         }
