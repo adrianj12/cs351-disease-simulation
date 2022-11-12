@@ -15,7 +15,6 @@ public class main {
             filePath = args[0];
             // CALL TO GUI IS MADE HERE
         }
-        startSimulation();
     }
 
     // GUI WILL CALL THIS TO START SIMULATION
