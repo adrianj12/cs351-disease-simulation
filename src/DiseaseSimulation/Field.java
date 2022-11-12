@@ -8,6 +8,8 @@ import java.util.*;
 public class Field {
 
     public ArrayList<Agent> allAgents;
+    public int height;
+    public int width;
 
     public Field(String filePath) {
         readConfigurations(filePath);
@@ -85,6 +87,9 @@ public class Field {
             System.out.println("Please refer to README to correctly run program.");
             System.exit(1);
         }
+
+        this.width = width;
+        this.height = height;
 
         createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick);
 
