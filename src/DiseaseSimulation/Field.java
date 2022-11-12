@@ -122,5 +122,23 @@ public class Field {
         } else {
 
         }
+
+        findAgentsInProximity(exposureDistance);
+
+        for(int i = 0; i < allAgents.get(0).agentsInExposureDistance.size(); i++) {
+            System.out.print(allAgents.get(0).agentsInExposureDistance.get(i));
+            System.out.print("  ");
+        }
+    }
+
+    private void findAgentsInProximity(int exposureDistance){
+        for(int i = 0; i < allAgents.size() - 1; i++){
+            for(int j = i + 1; j < allAgents.size(); j++){
+                // using distance formula to calculate distance between two agents
+                double distanceXAxis = allAgents.get(j).positionX - allAgents.get(i).positionX;
+                double distanceYAxis = allAgents.get(j).positionY - allAgents.get(i).positionY;
+                double totalDistance = Math.sqrt(Math.pow(distanceXAxis, 2) + Math.pow(distanceYAxis, 2));
+            }
+        }
     }
 }

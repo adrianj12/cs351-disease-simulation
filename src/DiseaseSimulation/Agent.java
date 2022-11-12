@@ -17,7 +17,7 @@ public class Agent extends Thread{
     public boolean immune = false;
     public boolean dead = false;
 
-    ArrayList<Agent> agentsInExposureDistance = new ArrayList<>();
+    ArrayList<Integer> agentsInExposureDistance = new ArrayList<>();
 
     public Agent(int positionX, int positionY, int exposureDistance, int incubation, int sickness, double recover, boolean sick){
         this.positionX = positionX;
@@ -51,6 +51,8 @@ public class Agent extends Thread{
                     }
                 }
             }
+
+            sleep(3);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
