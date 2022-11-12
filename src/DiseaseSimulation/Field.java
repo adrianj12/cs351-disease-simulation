@@ -10,6 +10,8 @@ public class Field {
     public ArrayList<Agent> allAgents;
     public int height;
     public int width;
+    public int rows;
+    public int columns;
 
     public Field(String filePath) {
         readConfigurations(filePath);
@@ -94,6 +96,8 @@ public class Field {
 
         this.width = width;
         this.height = height;
+        this.rows = rows;
+        this.columns = columns;
 
         createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick);
 
