@@ -139,12 +139,6 @@ public class Field {
         }
 
         findAgentsInProximity(exposureDistance);
-
-
-        for(int i = 0; i < allAgents.get(3).agentsInExposureDistance.size(); i++) {
-            System.out.print(allAgents.get(3).agentsInExposureDistance.get(i));
-            System.out.print("  ");
-        }
     }
 
     private void findAgentsInProximity(int exposureDistance){
