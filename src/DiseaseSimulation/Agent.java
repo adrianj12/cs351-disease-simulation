@@ -3,7 +3,7 @@ package DiseaseSimulation;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Agent extends Thread{
+public class Agent implements Runnable {
 
     public int positionX;
     public int positionY;
@@ -34,7 +34,7 @@ public class Agent extends Thread{
         try{
             while(!dead && !immune){
                 if(sick){
-                    sleep(1000L * sickness);
+                    Thread.sleep(1000L * sickness);
                     sick = false;
                     if(recover) immune = true;
                     else {
@@ -45,14 +45,14 @@ public class Agent extends Thread{
                     boolean infected = checkExposed();
                     if(infected){
                         vulnerable = true;
-                        sleep(1000L * incubation);
+                        Thread.sleep(1000L * incubation);
                         vulnerable = false;
                         sick = true;
                     }
                 }
             }
 
-            sleep(3);
+            Thread.sleep(3);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
