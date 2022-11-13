@@ -1,3 +1,13 @@
+/*************************************************************************
+ * Daniel Morales-Garcia
+ *
+ * Field.java is used as a singular object and is the field in the which the
+ * disease simulation takes place. This class takes in the path to a config
+ * file int the constructor, reads simulation configurations, creates the
+ * field in which simulation takes place, and creates all agents.
+ *
+ *************************************************************************/
+
 package DiseaseSimulation;
 
 import javax.swing.*;
@@ -8,17 +18,37 @@ import java.util.*;
 
 public class Field {
 
+    // arrayList of all agents
     public ArrayList<Agent> allAgents;
+
+    //height of field
     public int height;
+
+    // width of field
     public int width;
+
+    // row number if field is grid
     public int rows;
+
+    //column number if field is grid
     public int columns;
 
+    // constructor that calls takes in filepath to send to readConfigurations
     public Field(String filePath) {
         readConfigurations(filePath);
     }
 
-
+    /*
+     * readConfigurations takes in a String that is the path to the config file, reads the file and
+     * parses the data. Then calls a function to create the agents.
+     *
+     * @Parameters
+     * String configFile
+     *      path to txt config file
+     *
+     * @return
+     * void
+     */
     private void readConfigurations(String configFile) {
         Random rand = new Random();
 
@@ -101,9 +131,38 @@ public class Field {
         this.columns = columns;
 
         createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick);
-
     }
 
+    /*
+     * createAgents creates all agents that will be displayed on field
+     *
+     * @Parameters
+     * char agentLocationType
+     *      determines play type of grid('g'), random('r'), or randomgrid('x')
+     * int width
+     *      width dimension of board
+     * int height
+     *      height dimension of board
+     * int exposureDistance
+     *      distance that an agent can get another agent sick
+     * int incubation
+     *      time that an agent takes to get sick after exposure
+     * int sickess
+     *      time that an agent is sick before dying or recovering
+     * double recover
+     *      likelihood that an agent will recover
+     * int rows
+     *      rows on field if grid option is chosen
+     * int columns
+     *      columns on field if grid option is chosen
+     * int agents
+     *      number of agents at play if specified
+     * int initialSick
+     *      number of initial sick agents
+     *
+     * @return
+     * void
+     */
     private void createAgents(char agentLocationType, int width, int height, int exposureDistance, int incubation,
                                      int sickness, double recover, int rows, int columns, int agents, int initialSick) {
 
@@ -134,11 +193,14 @@ public class Field {
             int agentCounter = 0;
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
-                    if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
+                    // distance of next agent on grid is met
+                    if (i % agentDistanceRows == 0 && j % agentDistanceColumns == 0) {
                         Agent agent;
+                        // sick agent is created
                         if(initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
                             agent = new Agent((int)(j * singleColumnWidth),(int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
                         }
+                        // non sick agent is created
                         else{
                             agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
                         }
@@ -192,10 +254,12 @@ public class Field {
             int index = 0;
             for(int i = 0; i < rows+1; i++){
                 for(int j = 0 ; j < columns+1; j++){
+                    // non sick agent is added to grid position
                     if(allAgentsIndexRandomized.get(index) == 1) {
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
                         allAgents.add(agent);
                     }
+                    // sick agent is added to grid position
                     else if(allAgentsIndexRandomized.get(index) == 2){
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
                         allAgents.add(agent);
@@ -206,8 +270,34 @@ public class Field {
         }
 
         findAgentsInProximity(exposureDistance);
+        startAgents();
     }
 
+    /*
+     * startAgents starts every agent thread.
+     *
+     * @Parameters
+     * void
+     *
+     * @return
+     * void
+     */
+    private void startAgents(){
+        for(int i = 0; i < allAgents.size(); i++){
+            allAgents.get(i).start();
+        }
+    }
+
+    /*
+     * find AgentsInProximity finds all agents that are in exposure distance of each other
+     *
+     * @Parameters
+     * int exposureDistance
+     *      distance range that an agent can make another sick
+     *
+     * @return
+     * void
+     */
     private void findAgentsInProximity(int exposureDistance){
         for(int i = 0; i < allAgents.size() - 1; i++){
             for(int j = i + 1; j < allAgents.size(); j++){
