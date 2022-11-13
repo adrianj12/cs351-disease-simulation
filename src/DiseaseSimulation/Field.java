@@ -3,6 +3,7 @@ package DiseaseSimulation;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Field {
@@ -149,9 +150,26 @@ public class Field {
         //case for random selection
         } else if (agentLocationType == 'r') {
             Random rand = new Random();
-            int agentHeight = rand.nextInt(height+1);
 
+            // randomizing agent locations
+            for(int i = 0; i < agents; i++){
+                int agentWidth = rand.nextInt(width+1);
+                int agentHeight = rand.nextInt(height+1);
+                Agent agent = new Agent(agentWidth, agentHeight, exposureDistance, incubation, sickness, recover, false);
+                allAgents.add(agent);
+            }
 
+            //adding sick agents
+            HashSet<Integer> alreadySickAgentIndexes = new HashSet<>();
+            int index = 0;
+            while(index < initialSick) {
+                int sickAgentIndex = rand.nextInt(agents);
+                if(!alreadySickAgentIndexes.contains(sickAgentIndex)){
+                    alreadySickAgentIndexes.add(index);
+                    allAgents.get(index).sick = true;
+                    index++;
+                }
+            }
         // case for randomgrid selection
         } else {
             double singleRowHeight = ((double) height) / ((double) rows);
