@@ -11,7 +11,7 @@ package DiseaseSimulation;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Agent implements Runnable {
+public class Agent extends Thread {
 
     // position of agent on X axis
     public int positionX;
@@ -82,16 +82,16 @@ public class Agent implements Runnable {
                     boolean infected = checkExposed();
                     if(infected){
                         vulnerable = true;
-                        Thread.sleep(1000L * incubation);
+                        sleep(1000L * incubation);
                         vulnerable = false;
                         sick = true;
                     }
                 }
                 // used to avoid constant loop, minimise CPU usage a bit.
-                Thread.sleep(3);
+                sleep(3);
             }
 
-            Thread.sleep(3);
+            Thread.sleep(5);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
