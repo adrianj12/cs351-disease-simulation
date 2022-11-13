@@ -112,10 +112,10 @@ public class Field {
             /* calculation of how many vertexes of separation agents must be on row to be as far as possible but
                still in exposure distance */
             double singleRowHeight = ((double) height) / ((double) rows);
-            int agentDistanceRows = (int) (exposureDistance / singleRowHeight);
+            int agentDistanceRows = (int)(exposureDistance / singleRowHeight);
 
             double singleColumnHeight = ((double) width) / ((double) columns);
-            int agentDistanceColumns = (int) (exposureDistance / singleColumnHeight);
+            int agentDistanceColumns = (int)(exposureDistance / singleColumnHeight);
 
             // randomizing where sick agents will be on field
             ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
@@ -134,22 +134,54 @@ public class Field {
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
                     if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
+                        Agent agent;
                         if(initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
-                            Agent agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
-                            allAgents.add(agent);
+                            agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
                         }
                         else{
-                            Agent agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
-                            allAgents.add(agent);
+                            agent = new Agent((int) (j * singleColumnHeight), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
                         }
+                        allAgents.add(agent);
                         agentCounter++;
                     }
                 }
             }
+        //case for random selection
         } else if (agentLocationType == 'r') {
 
+        // case for randomgrid selection
         } else {
+            double singleRowHeight = ((double) height) / ((double) rows);
+            int agentDistanceRows = (int)(exposureDistance / singleRowHeight);
 
+            double singleColumnHeight = ((double) width) / ((double) columns);
+            int agentDistanceColumns = (int)(exposureDistance / singleColumnHeight);
+
+            ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
+            // creating grid with all possible agent locations
+            for(int i = 0; i < ((rows+1) * (columns+1)); i++) allAgentsIndexRandomized.add(0);
+            // adding agents to arraylist (represented as 1's)
+            for(int i = 0; i < agents; i++) allAgentsIndexRandomized.set(i, 1);
+            // adding the sick agents to arraylist(represented as 2's)
+            for(int i = 0; i < initialSick; i++) allAgentsIndexRandomized.set(i, 2);
+
+            //randomizing Arraylist order
+            Collections.shuffle(allAgentsIndexRandomized);
+
+            int index = 0;
+            for(int i = 0; i < rows+1; i++){
+                for(int j = 0 ; j < columns+1; j++){
+                    if(allAgentsIndexRandomized.get(index) == 1) {
+                        Agent agent = new Agent((int)(j * singleColumnHeight), (int)(i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
+                        allAgents.add(agent);
+                    }
+                    else if(allAgentsIndexRandomized.get(index) == 2){
+                        Agent agent = new Agent((int)(j * singleColumnHeight), (int)(i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
+                        allAgents.add(agent);
+                    }
+                    index++;
+                }
+            }
         }
 
         findAgentsInProximity(exposureDistance);
