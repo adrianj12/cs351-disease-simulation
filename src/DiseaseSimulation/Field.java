@@ -131,6 +131,7 @@ public class Field {
         this.columns = columns;
 
         createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick);
+
     }
 
     /*
@@ -270,7 +271,7 @@ public class Field {
         }
 
         findAgentsInProximity(exposureDistance);
-        startAgents();
+
     }
 
     /*
@@ -282,7 +283,10 @@ public class Field {
      * @return
      * void
      */
-    private void startAgents(){
+    public void startAgents() {
+
+        System.out.println("Starting agents...");
+
         for(int i = 0; i < allAgents.size(); i++){
             allAgents.get(i).start();
         }
