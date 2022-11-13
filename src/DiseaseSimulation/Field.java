@@ -114,8 +114,8 @@ public class Field {
             double singleRowHeight = ((double) height) / ((double) rows);
             int agentDistanceRows = (int)(exposureDistance / singleRowHeight);
 
-            double singleColumnHeight = ((double) width) / ((double) columns);
-            int agentDistanceColumns = (int)(exposureDistance / singleColumnHeight);
+            double singleColumnWidth = ((double) width) / ((double) columns);
+            int agentDistanceColumns = (int)(exposureDistance / singleColumnWidth);
 
             // randomizing where sick agents will be on field
             ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
@@ -136,10 +136,10 @@ public class Field {
                     if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
                         Agent agent;
                         if(initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
-                            agent = new Agent((int)(height - (j * singleColumnHeight)), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
+                            agent = new Agent((int)(j * singleColumnWidth),(int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
                         }
                         else{
-                            agent = new Agent((int)(height - (j * singleColumnHeight)), (int) (i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
+                            agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
                         }
                         allAgents.add(agent);
                         agentCounter++;
@@ -149,7 +149,7 @@ public class Field {
         //case for random selection
         } else if (agentLocationType == 'r') {
             Random rand = new Random();
-            int agentHeight = rand.nextInt(height+1)
+            int agentHeight = rand.nextInt(height+1);
 
 
         // case for randomgrid selection
@@ -157,8 +157,8 @@ public class Field {
             double singleRowHeight = ((double) height) / ((double) rows);
             int agentDistanceRows = (int)(exposureDistance / singleRowHeight);
 
-            double singleColumnHeight = ((double) width) / ((double) columns);
-            int agentDistanceColumns = (int)(exposureDistance / singleColumnHeight);
+            double singleColumnWidth = ((double) width) / ((double) columns);
+            int agentDistanceColumns = (int)(exposureDistance / singleColumnWidth);
 
             ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
             // creating grid with all possible agent locations
@@ -175,11 +175,11 @@ public class Field {
             for(int i = 0; i < rows+1; i++){
                 for(int j = 0 ; j < columns+1; j++){
                     if(allAgentsIndexRandomized.get(index) == 1) {
-                        Agent agent = new Agent((int)(height - (j * singleColumnHeight)), (int)(i * singleRowHeight), exposureDistance, incubation, sickness, recover, false);
+                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
                         allAgents.add(agent);
                     }
                     else if(allAgentsIndexRandomized.get(index) == 2){
-                        Agent agent = new Agent((int)(height - (j * singleColumnHeight)), (int)(i * singleRowHeight), exposureDistance, incubation, sickness, recover, true);
+                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
                         allAgents.add(agent);
                     }
                     index++;
