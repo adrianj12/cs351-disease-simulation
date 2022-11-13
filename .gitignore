@@ -1,9 +1,7 @@
 # Default ignored files
 /shelf/
 out
-lab4.iml
+*.iml
 .DS_Store
 .idea
 META-INF
-
-
