@@ -4,4 +4,4 @@ incubation 6
 sickness 12
 recover 0.90
 initialsick 2
-grid 15 15
+grid 5 5

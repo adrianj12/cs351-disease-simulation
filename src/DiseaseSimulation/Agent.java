@@ -34,6 +34,9 @@ public class Agent extends Thread {
     // agent is exposed but not sick yet
     public boolean vulnerable = false;
 
+    // agent is sick but asymptomatic
+    public boolean asymptomatic = false;
+
     // agent is sick
     public boolean sick;
 
