@@ -1,24 +1,27 @@
 package DiseaseSimulation;
 
-import javafx.animation.Animation;
+// JavaFX mechanics
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.animation.AnimationTimer;
+
+// JavaFX graphics
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-import javafx.animation.AnimationTimer;
+// JavaFX nodes/components
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.time.Duration;
 
@@ -165,9 +168,7 @@ public class GUI extends Application {
 
         State state = State.Vulnerable;
 
-        if(agent.vulnerable) {
-            state = State.Vulnerable;
-        } else if (agent.sick) {
+        if (agent.sick) {
             state = State.Sick;
         } else if (agent.asymptomatic) {
             state = State.Asymptomatic;
