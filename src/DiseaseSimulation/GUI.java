@@ -32,11 +32,11 @@ public class GUI extends Application {
     private static GraphicsContext gc;
 
     // Agent state colors
-    Color vulnerable = Color.BLUE;
-    Color sick = Color.YELLOW;
-    Color immune = Color.GREEN;
-    Color dead = Color.BLACK;
-    Color asymptomatic = Color.RED;
+    private static Color vulnerable = Color.BLUE;
+    private static Color sick = Color.YELLOW;
+    private static Color immune = Color.GREEN;
+    private static Color dead = Color.BLACK;
+    private static Color asymptomatic = Color.ORANGERED;
 
     public GUI() { }
 
@@ -184,15 +184,15 @@ public class GUI extends Application {
 
     private enum State {
 
-        Vulnerable(Color.BLUE),
-        Sick(Color.YELLOW),
-        Asymptomatic(Color.ORANGERED),
-        Dead(Color.BLACK),
-        Immune(Color.GREEN);
+        Vulnerable(vulnerable),
+        Sick(sick),
+        Asymptomatic(asymptomatic),
+        Dead(dead),
+        Immune(immune);
 
         public Color color;
 
-        private State(Color color) {
+        State(Color color) {
 
             this.color = color;
 
