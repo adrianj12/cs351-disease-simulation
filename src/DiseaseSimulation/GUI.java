@@ -122,7 +122,7 @@ public class GUI extends Application {
 
         BorderPane.setAlignment(buttonBar, Pos.CENTER);
         buttonBar.getChildren().addAll(startButton, stopButton, restartButton);
-        layout.setBottom(startButton);
+        layout.setBottom(buttonBar);
 
         // Set up scene
         Scene scene = new Scene(layout, 800, 800);
