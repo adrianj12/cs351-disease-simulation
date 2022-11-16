@@ -22,35 +22,44 @@ Each line generally follows an `optionname [option1] [option2]...` format.
 
     dimensions width height
 Width and height of simulation field in pixels. *Default: 200*
+<br /><br />
 
     exposuredistance n
 Radius of distance `n` cm of contagiousness between agents. *Default: 20*
+<br /><br />
 
     incubation n
 Incubation period `n` measured in days. However, this is scaled down to 
 seconds when running the simulation. *Default: 5*
+<br /><br />
 
     sickness n
 Length of time in `n` days that an agent either recovers or dies. *Default: 10*
+<br /><br />
 
     recover p
 Probability `p` that an agent will recover. *Default: 0.95*
+<br /><br />
 
     initialsick n
 Number `n` agents  that start sick at the beginning of the simulation. 
 *Default: 1*
+<br /><br />
 
     initialimmune n
 Number `n` agents that are naturally immune to the disease at the beginning 
 of the simulation. *Default: 0*
+<br /><br />
 
 #### Layouts:
     grid r c
 Creates a grid `r` rows and `c` columns in size with agents filling every cell.
+<br /><br />
 
     randomgrid r c n
 Same as above, except `n` specifies a number of agents to generate randomly 
 throughout the grid.
+<br /><br />
 
     random n
 Generates `n` agents and places places them randomly throughout the simulation 
