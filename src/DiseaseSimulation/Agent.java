@@ -74,7 +74,7 @@ public class Agent extends Thread {
         try{
             while(!dead && !immune){
                 if(sick){
-                    Thread.sleep(1000L * sickness);
+                    sleep(1000L * sickness);
                     sick = false;
                     if(recover) immune = true;
                     else {
@@ -94,7 +94,7 @@ public class Agent extends Thread {
                 sleep(3);
             }
 
-            Thread.sleep(5);
+            sleep(5);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
