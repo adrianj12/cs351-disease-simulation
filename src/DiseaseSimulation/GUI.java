@@ -73,7 +73,7 @@ public class GUI extends Application {
         // Set up blank white simulation canvas background
         simField = new Canvas(field.width, field.height);
         gc = simField.getGraphicsContext2D();
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.DARKGREY);
         gc.fillRect(0, 0, field.width, field.height);
         layout.setCenter(simField);
 
