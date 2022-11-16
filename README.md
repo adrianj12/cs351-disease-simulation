@@ -16,7 +16,7 @@ Run:
 Where *configfile.txt* is is the configuration file for the simulation. 
 Use quotation marks if your path has a space in it.
 <br /><br />
-### Configuration file
+### Configuration file:
 One configuration setting per line.
 Each line generally follows an `optionname [option1] [option2]...` format.
 
@@ -44,7 +44,7 @@ Number `n` agents  that start sick at the beginning of the simulation.
 Number `n` agents that are naturally immune to the disease at the beginning 
 of the simulation. *Default: 0*
 
-#### Layouts
+#### Layouts:
     grid r c
 Creates a grid `r` rows and `c` columns in size with agents filling every cell.
 
