@@ -1,4 +1,4 @@
-## **Disease Simulation**
+## Disease Simulation
 *by Daniel Morales-Garcia and Adrian Abeyta*
 ___
 ### Description:
@@ -24,7 +24,7 @@ Each line generally follows an `optionname [option1] [option2]...` format.
 Width and height of simulation field in pixels. *Default: 200*
 
     exposuredistance n
-Radius of distance `n` of contagiousness between agents. *Default: 20*
+Radius of distance `n` cm of contagiousness between agents. *Default: 20*
 
     incubation n
 Incubation period `n` measured in days. However, this is scaled down to 
