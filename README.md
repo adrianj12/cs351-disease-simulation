@@ -9,9 +9,9 @@ Specific starting conditions are read from a text file as outlined below.
 The simulation field is also customizable in size and layout. 
 <br /><br />
 ### Usage:
-Run:
+Run
 
-`java main C:\Path\to\configfile.txt`
+`java -jar DiseaseSimulation.jar C:\Path\to\configfile.txt`
 
 Where *configfile.txt* is is the configuration file for the simulation. 
 Use quotation marks if your path has a space in it.
