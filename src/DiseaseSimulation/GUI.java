@@ -76,13 +76,8 @@ public class GUI extends Application {
         // Set up blank white simulation canvas background
         simField = new Canvas(field.width + 10, field.height + 10);
         gc = simField.getGraphicsContext2D();
-<<<<<<< HEAD
-        gc.setFill(Color.DARKGREY);
-        gc.fillRect(0, 0, field.width, field.height);
-=======
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, field.width + 10, field.height + 10);
->>>>>>> 62378ae (finished GUI, changed agent running algorithm)
         layout.setCenter(simField);
 
         // Set up the agents on the sim field canvas before sim is started

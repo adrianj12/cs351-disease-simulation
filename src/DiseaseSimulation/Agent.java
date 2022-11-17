@@ -83,17 +83,6 @@ public class Agent extends Thread {
      */
     @Override
     public void run(){
-<<<<<<< HEAD
-        try{
-            while(!dead && !immune){
-                if(sick){
-                    sleep(1000L * sickness);
-                    sick = false;
-                    if(recover) immune = true;
-                    else {
-                        dead = true;
-                    }
-=======
         activeAgent = true;
         try {
             if(sick) {
@@ -113,7 +102,6 @@ public class Agent extends Thread {
                 if(becomeAsymptomatic){
                     asymptomatic = true;
                     System.out.println("Agent " + agentNum + " is asymptomatic on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
->>>>>>> 62378ae (finished GUI, changed agent running algorithm)
                 }
                 else{
                     sick = true;
@@ -122,13 +110,6 @@ public class Agent extends Thread {
                 exposeAgents();
                 sleep(1000L * sickness);
             }
-<<<<<<< HEAD
-
-            sleep(5);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-=======
->>>>>>> 62378ae (finished GUI, changed agent running algorithm)
         }
         catch(Exception e) {System.out.println("Thread Error");};
 
