@@ -13,6 +13,7 @@ import java.time.Clock;
 
 public class main {
 
+    // start time of the simulation
     public static long startTime;
 
     // Field object that GUI will be constantly calling
@@ -53,7 +54,7 @@ public class main {
 
     }
 
-    public static void newGUI(){
+    public static void newSimulation(){
         field = new Field(filePath);
 
         // GUI creation

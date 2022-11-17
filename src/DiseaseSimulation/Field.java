@@ -332,7 +332,7 @@ public class Field {
      */
     public void startAgents() {
 
-        System.out.println("Starting agents...\n");
+        System.out.println("\nStarting agents...\n");
 
         for(int i = 0; i < allAgents.size(); i++){
             if(allAgents.get(i).sick) {

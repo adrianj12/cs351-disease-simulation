@@ -123,7 +123,7 @@ public class GUI extends Application {
                 gc.fillRect(0, 0, field.width+10, field.height+10);
                 layout.setCenter(simField);
                 try {
-                    main.newGUI();
+                    main.newSimulation();
                     stage.close();
                 } catch(IllegalStateException e){}
             }
