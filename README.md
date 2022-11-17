@@ -11,7 +11,7 @@ The simulation field is also customizable in size and layout.
 ### Usage:
 #### Run
 
-`java -jar DiseaseSimulation.jar C:\Path\to\configfile.txt`
+`java -jar DiseaseSimulation.jar "C:\Path\to\configfile.txt"`
 
 Where *configfile.txt* is is the configuration file for the simulation. 
 Use quotation marks if your path has a space in it. Make sure you have JavaFx JDK17 on yout system.
