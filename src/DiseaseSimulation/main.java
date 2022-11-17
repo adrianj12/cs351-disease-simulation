@@ -9,7 +9,11 @@
 
 package DiseaseSimulation;
 
+import java.time.Clock;
+
 public class main {
+
+    public static long startTime;
 
     // Field object that GUI will be constantly calling
     public static Field field;
@@ -47,6 +51,14 @@ public class main {
 
         }
 
+    }
+
+    public static void newGUI(){
+        field = new Field(filePath);
+
+        // GUI creation
+        GUI gui = new GUI();
+        gui.open(field);
     }
 
 }

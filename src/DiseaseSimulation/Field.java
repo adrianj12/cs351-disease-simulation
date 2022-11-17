@@ -12,7 +12,6 @@ package DiseaseSimulation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Field {
@@ -62,6 +61,8 @@ public class Field {
         int columns = 0;
         int agents = 100;
         int initialSick = 1;
+        double asymptomatic = 0.05;
+
         // determines play type of grid('g'), random('r'), or randomgrid('x'). default is random with 100 agents.
         char agentLocationType = 'r';
 
@@ -112,6 +113,12 @@ public class Field {
                     case ("initialsick"):
                         initialSick = sc.nextInt();
                         break;
+                    case("asymptomatic"):
+                        asymptomatic = sc.nextDouble();
+                        break;
+                    case("agents"):
+                        agents = sc.nextInt();
+                        break;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -124,12 +131,29 @@ public class Field {
             System.exit(1);
         }
 
+        // dimensions restrictions
+        if (width < 100 || width > 770 || height < 100 || height > 770){
+            System.out.println("Error, dimensions must be greater than 100");
+            System.exit(1);
+        }
+        if(agentLocationType == 'x' || agentLocationType == 'g'){
+            if(rows < 2 || columns < 2){
+                System.out.println("Error, rows and columns must be greater than 1 each");
+                System.exit(1);
+            }
+        }
+
+        // agent restrictions
+        if (agents > 120){
+            System.out.println("Error, cannot have more than 120 agents");
+        }
+
         this.width = width;
         this.height = height;
         this.rows = rows;
         this.columns = columns;
 
-        createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick);
+        createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick, asymptomatic);
 
     }
 
@@ -164,7 +188,8 @@ public class Field {
      * void
      */
     private void createAgents(char agentLocationType, int width, int height, int exposureDistance, int incubation,
-                                     int sickness, double recover, int rows, int columns, int agents, int initialSick) {
+                                     int sickness, double recover, int rows, int columns, int agents, int initialSick,
+                                    double asymtomatic) {
 
         this.allAgents = new ArrayList<Agent>();
 
@@ -179,33 +204,51 @@ public class Field {
 
             // randomizing where sick agents will be on field
             ArrayList<Integer> allAgentsIndexRandomized = new ArrayList<>();
-            for (int i = 0; i < rows + 1; i++) {
-                for (int j = 0; j < columns + 1; j++) {
-                    if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
-                        allAgentsIndexRandomized.add(allAgentsIndexRandomized.size());
+            try {
+                for (int i = 0; i < rows + 1; i++) {
+                    for (int j = 0; j < columns + 1; j++) {
+                        if (i % agentDistanceRows == 0 && (j % agentDistanceColumns == 0)) {
+                            allAgentsIndexRandomized.add(allAgentsIndexRandomized.size());
+                        }
                     }
                 }
+            }
+            catch(ArithmeticException e){
+                System.out.println("Error,your entered data has set up a simulation where starting agents cannot" +
+                        " get eachother sick\nTip: lower dimension sizes and increase exposure distance/grid dimensions");
+                System.exit(1);
             }
             Collections.shuffle(allAgentsIndexRandomized);
             HashSet<Integer> sickAgentIndexes = new HashSet<>();
             for(int i = 0; i < initialSick; i++) sickAgentIndexes.add(allAgentsIndexRandomized.get(i));
 
+            int agentNum = 0;
             int agentCounter = 0;
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
                     // distance of next agent on grid is met
-                    if (i % agentDistanceRows == 0 && j % agentDistanceColumns == 0) {
-                        Agent agent;
-                        // sick agent is created
-                        if(initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
-                            agent = new Agent((int)(j * singleColumnWidth),(int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
+                    try {
+                        if (i % agentDistanceRows == 0 && j % agentDistanceColumns == 0) {
+                            Agent agent;
+                            // sick agent is created
+                            if (initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
+                                agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
+                                        exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic);
+                                agentNum++;
+                            }
+                            // non-sick agent is created
+                            else {
+                                agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
+                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic);
+                                agentNum++;
+                            }
+                            allAgents.add(agent);
+                            agentCounter++;
                         }
-                        // non sick agent is created
-                        else{
-                            agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
-                        }
-                        allAgents.add(agent);
-                        agentCounter++;
+                    }
+                    catch(ArithmeticException e){
+                        System.out.println("Error,your entered data has set up a simulation where starting agents cannot" +
+                                " get eachother sick\nTip: lower dimension sizes and increase exposure distance/grid dimensions");
                     }
                 }
             }
@@ -217,7 +260,8 @@ public class Field {
             for(int i = 0; i < agents; i++){
                 int agentWidth = rand.nextInt(width+1);
                 int agentHeight = rand.nextInt(height+1);
-                Agent agent = new Agent(agentWidth, agentHeight, exposureDistance, incubation, sickness, recover, false);
+                Agent agent = new Agent(agentWidth, agentHeight, exposureDistance, incubation, sickness, recover,
+                        false, i, asymtomatic);
                 allAgents.add(agent);
             }
 
@@ -251,30 +295,34 @@ public class Field {
             //randomizing Arraylist order
             Collections.shuffle(allAgentsIndexRandomized);
 
+            int agentNum = 0;
             int index = 0;
             for(int i = 0; i < rows+1; i++){
                 for(int j = 0 ; j < columns+1; j++){
-                    // non sick agent is added to grid position
+                    // non-sick agent is added to grid position
                     if(allAgentsIndexRandomized.get(index) == 1) {
-                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, false);
+                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
+                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic);
                         allAgents.add(agent);
+                        agentNum++;
                     }
                     // sick agent is added to grid position
                     else if(allAgentsIndexRandomized.get(index) == 2){
-                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)), exposureDistance, incubation, sickness, recover, true);
+                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
+                                exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic);
                         allAgents.add(agent);
+                        agentNum++;
                     }
                     index++;
                 }
             }
         }
-
         findAgentsInProximity(exposureDistance);
 
     }
 
     /*
-     * startAgents starts every agent thread.
+     * startAgents starts sick agents.
      *
      * @Parameters
      * void
@@ -284,10 +332,12 @@ public class Field {
      */
     public void startAgents() {
 
-        System.out.println("Starting agents...");
+        System.out.println("Starting agents...\n");
 
         for(int i = 0; i < allAgents.size(); i++){
-            allAgents.get(i).start();
+            if(allAgents.get(i).sick) {
+                allAgents.get(i).start();
+            }
         }
     }
 
@@ -309,11 +359,18 @@ public class Field {
                 double distanceYAxis = allAgents.get(j).positionY - allAgents.get(i).positionY;
                 double totalDistance = Math.sqrt(Math.pow(distanceXAxis, 2) + Math.pow(distanceYAxis, 2));
 
+                // adding agents
                 if(totalDistance <= exposureDistance){
                     allAgents.get(i).agentsInExposureDistance.add(allAgents.get(j));
                     allAgents.get(j).agentsInExposureDistance.add(allAgents.get(i));
                 }
             }
+        }
+    }
+
+    public static void stopAgents(ArrayList<Agent> allAgents){
+        for(int i = 0; i < allAgents.size(); i++){
+            allAgents.get(i).stop();
         }
     }
 }

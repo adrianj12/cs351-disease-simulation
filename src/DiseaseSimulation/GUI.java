@@ -1,6 +1,7 @@
 package DiseaseSimulation;
 
 // JavaFX mechanics
+import com.sun.tools.javac.Main;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.animation.AnimationTimer;
@@ -21,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.time.Duration;
@@ -35,11 +37,12 @@ public class GUI extends Application {
     private static GraphicsContext gc;
 
     // Agent state colors
-    private static Color vulnerable = Color.BLUE;
-    private static Color sick = Color.YELLOW;
-    private static Color immune = Color.GREEN;
+    private static Color healthy = Color.LAWNGREEN;
+    private static Color vulnerable = Color.YELLOW;
+    private static Color sick = Color.RED;
+    private static Color immune = Color.LIGHTBLUE;
     private static Color dead = Color.BLACK;
-    private static Color asymptomatic = Color.ORANGERED;
+    private static Color asymptomatic = Color.ORANGE;
 
     public GUI() { }
 
@@ -71,27 +74,19 @@ public class GUI extends Application {
         layout.setTop(header);
 
         // Set up blank white simulation canvas background
-        simField = new Canvas(field.width, field.height);
+        simField = new Canvas(field.width + 10, field.height + 10);
         gc = simField.getGraphicsContext2D();
+<<<<<<< HEAD
         gc.setFill(Color.DARKGREY);
         gc.fillRect(0, 0, field.width, field.height);
+=======
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, 0, field.width + 10, field.height + 10);
+>>>>>>> 62378ae (finished GUI, changed agent running algorithm)
         layout.setCenter(simField);
 
         // Set up the agents on the sim field canvas before sim is started
         drawAgents();
-
-        // Setup log window components
-        VBox logWindow = new VBox();
-        Text logTitle = new Text("Agent Status Log\n\n");
-        logTitle.setFont(Font.font(null, FontWeight.BOLD, 14));
-
-        Text log = new Text();
-        log.setText("Log text");
-
-        logWindow.getChildren().addAll(logTitle, log);
-        BorderPane.setAlignment(logWindow, Pos.TOP_LEFT);
-        logWindow.setPrefWidth(400);
-        layout.setRight(logWindow);
 
         // Bottom start button
         HBox buttonBar = new HBox();
@@ -100,7 +95,11 @@ public class GUI extends Application {
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                startButton.setVisible(false);
+                main.startTime = System.currentTimeMillis();
                 field.startAgents();
+                timer time = new timer();
+                time.start();
             }
         });
 
@@ -109,17 +108,29 @@ public class GUI extends Application {
         stopButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                //field.stopAgents();
+                field.stopAgents(field.allAgents);
+                stopButton.setVisible(false);
             }
         });
 
         // Restart button
         Button restartButton = new Button("Restart");
-        stopButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        restartButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                //field.stopAgents();
-                field.startAgents();
+                field.stopAgents(field.allAgents);
+                startButton.setVisible(true);
+                stopButton.setVisible(true);
+                // setting new canvas
+                simField = new Canvas(field.width+10, field.height+10);
+                gc = simField.getGraphicsContext2D();
+                gc.setFill(Color.WHITE);
+                gc.fillRect(0, 0, field.width+10, field.height+10);
+                layout.setCenter(simField);
+                try {
+                    main.newGUI();
+                    stage.close();
+                } catch(IllegalStateException e){}
             }
         });
 
@@ -132,27 +143,15 @@ public class GUI extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // ***** Main simulation loop *****
-        AnimationTimer a = new AnimationTimer() {
-
-            private long nextTime = 0; // For incrementing animation timer counter
-
-            @Override
-            public void handle(long now) {
-
-                if(now > nextTime) {
-
-                    drawAgents();
-
-                    // Updates GUI every 500 milliseconds
-                    nextTime = now + Duration.ofMillis(500).toNanos();
-
-                }
-
-            }
-        };
-
     }
+
+    private class timer extends AnimationTimer {
+        @Override
+        public void handle(long now) {
+            drawAgents();
+        }
+    }
+
 
     private void drawAgents() {
 
@@ -166,16 +165,17 @@ public class GUI extends Application {
 
     private void drawAgent(Agent agent) {
 
-        State state = State.Vulnerable;
-
-        if (agent.sick) {
-            state = State.Sick;
-        } else if (agent.asymptomatic) {
-            state = State.Asymptomatic;
-        } else if (agent.dead) {
+        State state = State.Normal;
+        if (agent.dead) {
             state = State.Dead;
         } else if (agent.immune) {
             state = State.Immune;
+        } else if (agent.vulnerable) {
+            state = State.Vulnerable;
+        }else if (agent.asymptomatic) {
+            state = State.Asymptomatic;
+        } else if (agent.sick) {
+            state = State.Sick;
         }
 
         gc.setFill(state.color);
@@ -185,6 +185,7 @@ public class GUI extends Application {
 
     private enum State {
 
+        Normal(healthy),
         Vulnerable(vulnerable),
         Sick(sick),
         Asymptomatic(asymptomatic),

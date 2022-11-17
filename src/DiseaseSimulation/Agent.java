@@ -13,6 +13,8 @@ import java.util.Random;
 
 public class Agent extends Thread {
 
+    public int agentNum;
+
     // position of agent on X axis
     public int positionX;
 
@@ -46,17 +48,27 @@ public class Agent extends Thread {
     // agent has died
     public boolean dead = false;
 
+    // whether agent is being run
+    public boolean activeAgent = false;
+
+    // whether agent will become asymptomatic
+    public boolean becomeAsymptomatic;
+
+
     // arrayList containing all agents in exposure distance to this one.
     ArrayList<Agent> agentsInExposureDistance = new ArrayList<>();
 
-    public Agent(int positionX, int positionY, int exposureDistance, int incubation, int sickness, double recover, boolean sick){
+    public Agent(int positionX, int positionY, int exposureDistance, int incubation, int sickness, double recover,
+                 boolean sick, int agentNum, double asymptomatic){
         this.positionX = positionX;
         this.positionY = positionY;
         this.exposureDistance = exposureDistance;
         this.incubation = incubation;
         this.sickness = sickness;
-        this.recover = determineIfRecovers(recover);
+        this.recover = determineFromPercentage(recover);
         this.sick = sick;
+        this.agentNum = agentNum;
+        this.becomeAsymptomatic = determineFromPercentage(asymptomatic);
     }
 
     /*
@@ -71,6 +83,7 @@ public class Agent extends Thread {
      */
     @Override
     public void run(){
+<<<<<<< HEAD
         try{
             while(!dead && !immune){
                 if(sick){
@@ -80,64 +93,91 @@ public class Agent extends Thread {
                     else {
                         dead = true;
                     }
+=======
+        activeAgent = true;
+        try {
+            if(sick) {
+                System.out.println("Agent " + agentNum + " is sick on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
+                exposeAgents();
+                sleep(1000L * sickness);
+            }
+            else if(asymptomatic){
+                System.out.println("Agent " + agentNum + " is asymptomatic on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
+                exposeAgents();
+                sleep(1000L * sickness);
+            }
+            else {
+                vulnerable = true;
+                sleep(1000L * incubation);
+                vulnerable = false;
+                if(becomeAsymptomatic){
+                    asymptomatic = true;
+                    System.out.println("Agent " + agentNum + " is asymptomatic on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
+>>>>>>> 62378ae (finished GUI, changed agent running algorithm)
                 }
                 else{
-                    boolean infected = checkExposed();
-                    if(infected){
-                        vulnerable = true;
-                        sleep(1000L * incubation);
-                        vulnerable = false;
-                        sick = true;
-                    }
+                    sick = true;
+                    System.out.println("Agent " + agentNum + " is sick on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
                 }
-                // used to avoid constant loop, minimise CPU usage a bit.
-                sleep(3);
+                exposeAgents();
+                sleep(1000L * sickness);
             }
+<<<<<<< HEAD
 
             sleep(5);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+=======
+>>>>>>> 62378ae (finished GUI, changed agent running algorithm)
         }
+        catch(Exception e) {System.out.println("Thread Error");};
+
+        if(recover || asymptomatic) immune = true;
+        else dead = true;
+
+        if(dead) System.out.println("Agent " + agentNum + " is dead on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
+        if(immune) System.out.println("Agent " + agentNum + " is Immune on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
     }
 
     /*
-    * determineIfRecovers takes in the likelihood that an agent will die after being sick
-    *
-    * @Parameters
-    * double recover
-    *      double ranging from 0.0 - 1.0. Represents the percentage likelihood that agent will survive disease
-    *
-    * @return
-    * boolean
-    *      if agent will recover from disease.
-    */
-    private boolean determineIfRecovers(double recover){
-        Random rand = new Random();
-
-        double recoverPercentage = 100 * recover;
-        if((rand.nextInt(100) + 1)  > recoverPercentage){
-            return false;
-        }
-        else return true;
-    }
-
-    /*
-     * checkExposed checks if any agents in an agents exposure distance is sick.
+     * exposeAgents makes agents around this sick/asymptomatic agent sick/asymptomatic by starting their thread.
      *
      * @Parameters
      * void
      *
      * @return
-     * boolean
-     *      whether agent is in contact with a sick agent
+     * void
      */
-    public boolean checkExposed(){
-        for(int i = 0; i < agentsInExposureDistance.size();){
-            if(agentsInExposureDistance.get(i).sick){
-                return true;
+    public void exposeAgents(){
+        for(int i = 0; i < agentsInExposureDistance.size(); i++){
+            if(!agentsInExposureDistance.get(i).activeAgent){
+                agentsInExposureDistance.get(i).activeAgent = true;
+                agentsInExposureDistance.get(i).start();
             }
         }
-        return false;
     }
 
+
+
+    /*
+    * determineFromPercentage takes in a percentage likelihood of situation occurring, randomizes result and returns
+    * true or false.
+    *
+    * @Parameters
+    * double recover
+    *      double ranging from 0.0 - 1.0. Represents the percentage likelihood
+    *
+    * @return
+    * boolean
+    *      whether occurs from likelihood
+    */
+    private boolean determineFromPercentage(double likelihood){
+        Random rand = new Random();
+
+        double percent = 100 * likelihood;
+        if((rand.nextInt(100) + 1)  > percent){
+            return false;
+        }
+        else return true;
+    }
 }
