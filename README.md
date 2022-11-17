@@ -14,7 +14,7 @@ Run
 `java -jar DiseaseSimulation.jar C:\Path\to\configfile.txt`
 
 Where *configfile.txt* is is the configuration file for the simulation. 
-Use quotation marks if your path has a space in it.
+Use quotation marks if your path has a space in it. Make sure you have JavaFx JDK17 on yout system.
 <br /><br />
 ### Configuration file:
 One configuration setting per line.
@@ -49,6 +49,11 @@ Number `n` agents  that start sick at the beginning of the simulation.
     initialimmune n
 Number `n` agents that are naturally immune to the disease at the beginning 
 of the simulation. *Default: 0*
+<br /><br />
+
+
+    agent n
+Number `n` of agents for "random" play option. (must be less than 120) *Default: 20*
 <br /><br />
 
 #### Layouts:
