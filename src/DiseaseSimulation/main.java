@@ -6,10 +6,7 @@
  *
  *************************************************************************/
 
-
 package DiseaseSimulation;
-
-import java.time.Clock;
 
 public class main {
 
@@ -22,7 +19,7 @@ public class main {
     // the config file path passed in through command line argument
     public static String filePath;
 
-    /*
+    /**
      * Main verifies that a command line argument is passed in, then assigns the path to
      * a global variable String.
      *
@@ -55,11 +52,13 @@ public class main {
     }
 
     public static void newSimulation(){
+
         field = new Field(filePath);
 
         // GUI creation
         GUI gui = new GUI();
         gui.open(field);
+
     }
 
 }

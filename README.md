@@ -14,7 +14,7 @@ The simulation field is also customizable in size and layout.
 `java -jar DiseaseSimulation.jar "C:\Path\to\configfile.txt"`
 
 Where *configfile.txt* is is the configuration file for the simulation. 
-Use quotation marks if your path has a space in it. Make sure you have JavaFx JDK17 on yout system.
+Use quotation marks if your path has a space in it. Make sure you have JavaFX JDK17 on your system.
 <br />
 #### GUI
 There is three buttons on the simulation GUI. Start, Stop, and Reset. After stopping the simulation, you cannot continue,
@@ -60,11 +60,10 @@ of the simulation. *Default: 0*
 Number `n` of agents for "random" play option. (must be less than 120) *Default: 20*
 <br /><br />
 
-    asymptomatic n
-Number `n` is the percentage likelihood that an agent will be asymptomatic (0.00 - 1.00). Meaning that an agent can pass on the disease 
-without being sick themselves. Asymptomatic agent will always become immune.  *Default: 0.05*
+    asymptomatic p
+Probability `p` that an agent will be asymptomatic (0.00 - 1.00), meaning that an agent can pass on the disease 
+without being sick themselves. Asymptomatic agents will always become immune.  *Default: 0.05*
 <br /><br />
-
 
 #### Layouts:
     grid r c

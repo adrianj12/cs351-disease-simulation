@@ -1,7 +1,16 @@
+/**
+ *
+ * @author Adrian Abeyta <ajabeyta@unm.edu>
+ * @description Encapsulates the GUI. Provides Start, Stop, and Restart buttons to control the state of the
+ *  simulation. Reads the Field and updates canvas display accordingly.
+ * @name GUI
+ * @usage Instantiate to create a window with simulation field and appropriate buttons, then run open() method
+ *  with Field object as argument.
+ *
+ */
 package DiseaseSimulation;
 
 // JavaFX mechanics
-import com.sun.tools.javac.Main;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.animation.AnimationTimer;
@@ -25,8 +34,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.time.Duration;
-
 public class GUI extends Application {
 
     // Reference to simulation field object
@@ -37,15 +44,21 @@ public class GUI extends Application {
     private static GraphicsContext gc;
 
     // Agent state colors
-    private static Color healthy = Color.LAWNGREEN;
-    private static Color vulnerable = Color.YELLOW;
-    private static Color sick = Color.RED;
-    private static Color immune = Color.LIGHTBLUE;
-    private static Color dead = Color.BLACK;
-    private static Color asymptomatic = Color.ORANGE;
+    private static final Color healthy = Color.LAWNGREEN;
+    private static final Color vulnerable = Color.YELLOW;
+    private static final Color sick = Color.RED;
+    private static final Color immune = Color.LIGHTBLUE;
+    private static final Color dead = Color.BLACK;
+    private static final Color asymptomatic = Color.ORANGE;
 
     public GUI() { }
 
+    /**
+     *
+     * @description Creates JavaFX GUI components and displays initial simulation field
+     * @param field Simulation field object containing all agent nodes
+     *
+     */
     public void open(Field field) {
 
         this.field = field;
@@ -54,6 +67,17 @@ public class GUI extends Application {
 
     }
 
+    /**
+     *
+     * @description JavaFX parent method overridden to provide GUI components
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @TODO add log window pane to show agent within GUI
+     * @TODO add color legend to help identify agent states to user
+     *
+     */
     @Override
     public void start(Stage stage) {
 
@@ -83,14 +107,18 @@ public class GUI extends Application {
         // Set up the agents on the sim field canvas before sim is started
         drawAgents();
 
-        // Bottom start button
+        // Bottom buttons
         HBox buttonBar = new HBox();
-
+        Button stopButton = new Button("Stop");
         Button startButton = new Button("Start Simulation");
+        Button restartButton = new Button("Reset");
+
+        // Start button
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                startButton.setVisible(false);
+                startButton.setDisable(true);
+                stopButton.setDisable(false);
                 main.startTime = System.currentTimeMillis();
                 field.startAgents();
                 timer time = new timer();
@@ -98,24 +126,14 @@ public class GUI extends Application {
             }
         });
 
-        // Stop button
-        Button stopButton = new Button("Stop");
-        stopButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                field.stopAgents(field.allAgents);
-                stopButton.setVisible(false);
-            }
-        });
-
-        // Restart button
-        Button restartButton = new Button("Restart");
+        // Reset/restart button
+        restartButton.setDisable(true);
         restartButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 field.stopAgents(field.allAgents);
-                startButton.setVisible(true);
-                stopButton.setVisible(true);
+                startButton.setDisable(false);
+                stopButton.setDisable(true);
                 // setting new canvas
                 simField = new Canvas(field.width+10, field.height+10);
                 gc = simField.getGraphicsContext2D();
@@ -129,6 +147,18 @@ public class GUI extends Application {
             }
         });
 
+        // Stop button
+        stopButton.setDisable(true);
+        stopButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                field.stopAgents(field.allAgents);
+                stopButton.setDisable(true);
+                restartButton.setDisable(false);
+            }
+        });
+
+        // Set up bottom buttons
         BorderPane.setAlignment(buttonBar, Pos.CENTER);
         buttonBar.getChildren().addAll(startButton, stopButton, restartButton);
         layout.setBottom(buttonBar);
@@ -140,6 +170,11 @@ public class GUI extends Application {
 
     }
 
+    /**
+     *
+     * @description helper method to call JavaFX GUI components to redraw
+     *
+     */
     private class timer extends AnimationTimer {
         @Override
         public void handle(long now) {
@@ -147,7 +182,11 @@ public class GUI extends Application {
         }
     }
 
-
+    /**
+     *
+     * @description re/draws all agents on the simulation canvas/field
+     *
+     */
     private void drawAgents() {
 
         for(Agent current : field.allAgents) {
@@ -158,6 +197,13 @@ public class GUI extends Application {
 
     }
 
+    /**
+     *
+     * @description helper method to draw a singular agent with appropriate coloring; color is customizable thru class
+     *  variables at top of class body
+     * @param agent reference to agent object to draw onto canvas
+     *
+     */
     private void drawAgent(Agent agent) {
 
         State state = State.Normal;
@@ -178,6 +224,11 @@ public class GUI extends Application {
 
     }
 
+    /**
+     *
+     * @description helper enum to encapsulate agent state associated with color
+     *
+     */
     private enum State {
 
         Normal(healthy),
@@ -187,7 +238,7 @@ public class GUI extends Application {
         Dead(dead),
         Immune(immune);
 
-        public Color color;
+        public final Color color;
 
         State(Color color) {
 

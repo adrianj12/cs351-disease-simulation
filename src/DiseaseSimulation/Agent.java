@@ -71,7 +71,7 @@ public class Agent extends Thread {
         this.becomeAsymptomatic = determineFromPercentage(asymptomatic);
     }
 
-    /*
+    /**
      * run starts a thread
      *
      * @Parameters
@@ -111,7 +111,7 @@ public class Agent extends Thread {
                 sleep(1000L * sickness);
             }
         }
-        catch(Exception e) {System.out.println("Thread Error");};
+        catch(Exception e) {System.out.println("Thread Error");}
 
         if(recover || asymptomatic) immune = true;
         else dead = true;
@@ -120,7 +120,7 @@ public class Agent extends Thread {
         if(immune) System.out.println("Agent " + agentNum + " is Immune on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
     }
 
-    /*
+    /**
      * exposeAgents makes agents around this sick/asymptomatic agent sick/asymptomatic by starting their thread.
      *
      * @Parameters
@@ -140,7 +140,7 @@ public class Agent extends Thread {
 
 
 
-    /*
+    /**
     * determineFromPercentage takes in a percentage likelihood of situation occurring, randomizes result and returns
     * true or false.
     *

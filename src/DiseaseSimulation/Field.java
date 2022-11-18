@@ -36,7 +36,7 @@ public class Field {
         readConfigurations(filePath);
     }
 
-    /*
+    /**
      * readConfigurations takes in a String that is the path to the config file, reads the file and
      * parses the data. Then calls a function to create the agents.
      *
@@ -65,7 +65,6 @@ public class Field {
 
         // determines play type of grid('g'), random('r'), or randomgrid('x'). default is random with 100 agents.
         char agentLocationType = 'r';
-
 
         try {
             File file = new File(configFile);
@@ -157,7 +156,7 @@ public class Field {
 
     }
 
-    /*
+    /**
      * createAgents creates all agents that will be displayed on field
      *
      * @Parameters
@@ -214,8 +213,8 @@ public class Field {
                 }
             }
             catch(ArithmeticException e){
-                System.out.println("Error,your entered data has set up a simulation where starting agents cannot" +
-                        " get eachother sick\nTip: lower dimension sizes and increase exposure distance/grid dimensions");
+                System.out.println("Error, your entered data has set up a simulation where starting agents cannot" +
+                        " get each other sick\nTip: lower dimension sizes and increase exposure distance/grid dimensions");
                 System.exit(1);
             }
             Collections.shuffle(allAgentsIndexRandomized);
@@ -321,7 +320,7 @@ public class Field {
 
     }
 
-    /*
+    /**
      * startAgents starts sick agents.
      *
      * @Parameters
@@ -341,7 +340,7 @@ public class Field {
         }
     }
 
-    /*
+    /**
      * find AgentsInProximity finds all agents that are in exposure distance of each other
      *
      * @Parameters
