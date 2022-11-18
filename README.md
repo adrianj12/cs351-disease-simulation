@@ -65,6 +65,10 @@ Probability `p` that an agent will be asymptomatic (0.00 - 1.00), meaning that a
 without being sick themselves. Asymptomatic agents will always become immune.  *Default: 0.05*
 <br /><br />
 
+    initialimmune
+Number `n` of agents that are initially immune to the disease. *Default: 2*
+<br /><br />
+
 #### Layouts:
     grid r c
 Creates a grid `r` rows and `c` columns in size with agents filling every cell.
@@ -76,9 +80,11 @@ throughout the grid.
 <br /><br />
 
     random n
-Generates `n` agents and places places them randomly throughout the simulation 
+Generates `n` agents and places them randomly throughout the simulation 
 field area.
 
+*Each test file can only contain 1 layout type*
+<br />
 *Default: Randomly place 100 agents  or `random 100`*
 <br /><br />
 

@@ -55,11 +55,12 @@ public class Agent extends Thread {
     public boolean becomeAsymptomatic;
 
 
+
     // arrayList containing all agents in exposure distance to this one.
     ArrayList<Agent> agentsInExposureDistance = new ArrayList<>();
 
     public Agent(int positionX, int positionY, int exposureDistance, int incubation, int sickness, double recover,
-                 boolean sick, int agentNum, double asymptomatic){
+                 boolean sick, int agentNum, double asymptomatic, boolean initialImmune){
         this.positionX = positionX;
         this.positionY = positionY;
         this.exposureDistance = exposureDistance;
@@ -69,6 +70,7 @@ public class Agent extends Thread {
         this.sick = sick;
         this.agentNum = agentNum;
         this.becomeAsymptomatic = determineFromPercentage(asymptomatic);
+        this.immune = initialImmune;
     }
 
     /**
@@ -85,10 +87,12 @@ public class Agent extends Thread {
     public void run(){
         activeAgent = true;
         try {
-            if(sick) {
-                System.out.println("Agent " + agentNum + " is sick on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
-                exposeAgents();
-                sleep(1000L * sickness);
+            if(sick || immune) {
+                if(!immune) {
+                    System.out.println("Agent " + agentNum + " is sick on day " + ((System.currentTimeMillis() - main.startTime) / 1000));
+                    exposeAgents();
+                    sleep(1000L * sickness);
+                }
             }
             else if(asymptomatic){
                 System.out.println("Agent " + agentNum + " is asymptomatic on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
@@ -113,8 +117,10 @@ public class Agent extends Thread {
         }
         catch(Exception e) {System.out.println("Thread Error");}
 
-        if(recover || asymptomatic) immune = true;
-        else dead = true;
+        if(!immune) {
+            if (recover || asymptomatic) immune = true;
+            else dead = true;
+        }
 
         if(dead) System.out.println("Agent " + agentNum + " is dead on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));
         if(immune) System.out.println("Agent " + agentNum + " is Immune on day " + ((System.currentTimeMillis() - main.startTime) / 1000 ));

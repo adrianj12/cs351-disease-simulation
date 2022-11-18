@@ -1,8 +1,9 @@
 dimensions 700 400
-exposuredistance 70
+exposuredistance 90
 incubation 3
 sickness 8
 recover 0.90
 initialsick 2
-randomgrid 6 12 45
+randomgrid 6 12 55
 asymptomatic 0.10
+initialimmune 1

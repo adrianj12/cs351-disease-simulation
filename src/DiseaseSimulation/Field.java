@@ -62,6 +62,7 @@ public class Field {
         int agents = 100;
         int initialSick = 1;
         double asymptomatic = 0.05;
+        int initialImmune = 2;
 
         // determines play type of grid('g'), random('r'), or randomgrid('x'). default is random with 100 agents.
         char agentLocationType = 'r';
@@ -112,6 +113,9 @@ public class Field {
                     case ("initialsick"):
                         initialSick = sc.nextInt();
                         break;
+                    case ("initialimmune"):
+                        initialImmune = sc.nextInt();
+                        break;
                     case("asymptomatic"):
                         asymptomatic = sc.nextDouble();
                         break;
@@ -132,7 +136,7 @@ public class Field {
 
         // dimensions restrictions
         if (width < 100 || width > 770 || height < 100 || height > 770){
-            System.out.println("Error, dimensions must be greater than 100");
+            System.out.println("Error, dimensions must be greater than 100, and less than 770");
             System.exit(1);
         }
         if(agentLocationType == 'x' || agentLocationType == 'g'){
@@ -152,7 +156,8 @@ public class Field {
         this.rows = rows;
         this.columns = columns;
 
-        createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns, agents, initialSick, asymptomatic);
+        createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns,
+                agents, initialSick, asymptomatic, initialImmune);
 
     }
 
@@ -188,7 +193,7 @@ public class Field {
      */
     private void createAgents(char agentLocationType, int width, int height, int exposureDistance, int incubation,
                                      int sickness, double recover, int rows, int columns, int agents, int initialSick,
-                                    double asymtomatic) {
+                                    double asymtomatic, int initialImmune) {
 
         this.allAgents = new ArrayList<Agent>();
 
@@ -219,10 +224,17 @@ public class Field {
             }
             Collections.shuffle(allAgentsIndexRandomized);
             HashSet<Integer> sickAgentIndexes = new HashSet<>();
-            for(int i = 0; i < initialSick; i++) sickAgentIndexes.add(allAgentsIndexRandomized.get(i));
+            HashSet<Integer> initialImmuneIndexes = new HashSet<>();
+            for(int i = 0; i < initialSick + initialImmune; i++) {
+                if(i < initialSick){
+                    sickAgentIndexes.add(allAgentsIndexRandomized.get(i));
+                }
+                else{
+                    initialImmuneIndexes.add(allAgentsIndexRandomized.get(i));
+                }
+            }
 
             int agentNum = 0;
-            int agentCounter = 0;
             for (int i = 0; i < rows + 1; i++) {
                 for (int j = 0; j < columns + 1; j++) {
                     // distance of next agent on grid is met
@@ -230,19 +242,22 @@ public class Field {
                         if (i % agentDistanceRows == 0 && j % agentDistanceColumns == 0) {
                             Agent agent;
                             // sick agent is created
-                            if (initialSick != 0 && sickAgentIndexes.contains(agentCounter)) {
+                            if (initialSick != 0 && sickAgentIndexes.contains(agentNum)) {
                                 agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
-                                        exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic);
-                                agentNum++;
+                                        exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic, false);
+                            }
+                            // initially immune agent is added
+                            else if (initialImmune != 0 && initialImmuneIndexes.contains(agentNum)) {
+                                agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
+                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, true);
                             }
                             // non-sick agent is created
                             else {
                                 agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
-                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic);
-                                agentNum++;
+                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, false);
                             }
                             allAgents.add(agent);
-                            agentCounter++;
+                            agentNum++;
                         }
                     }
                     catch(ArithmeticException e){
@@ -260,19 +275,30 @@ public class Field {
                 int agentWidth = rand.nextInt(width+1);
                 int agentHeight = rand.nextInt(height+1);
                 Agent agent = new Agent(agentWidth, agentHeight, exposureDistance, incubation, sickness, recover,
-                        false, i, asymtomatic);
+                        false, i, asymtomatic, false);
                 allAgents.add(agent);
             }
 
-            //adding sick agents
+            //adding sick and initially immune agents
             HashSet<Integer> alreadySickAgentIndexes = new HashSet<>();
+            HashSet<Integer> alreadyImmuneAgentIndexes = new HashSet<>();
+
             int index = 0;
-            while(index < initialSick) {
-                int sickAgentIndex = rand.nextInt(agents);
-                if(!alreadySickAgentIndexes.contains(sickAgentIndex)){
-                    alreadySickAgentIndexes.add(index);
-                    allAgents.get(index).sick = true;
-                    index++;
+            while(index < initialSick + initialImmune) {
+                int agentIndex = rand.nextInt(agents);
+                if(index < initialSick){
+                    if(!alreadySickAgentIndexes.contains(agentIndex)){
+                        alreadySickAgentIndexes.add(agentIndex);
+                        allAgents.get(agentIndex).sick = true;
+                        index++;
+                    }
+                }
+                else {
+                    if (!alreadyImmuneAgentIndexes.contains(agentIndex)) {
+                        alreadyImmuneAgentIndexes.add(agentIndex);
+                        allAgents.get(agentIndex).immune = true;
+                        index++;
+                    }
                 }
             }
         // case for randomgrid selection
@@ -289,11 +315,19 @@ public class Field {
             // adding agents to arraylist (represented as 1's)
             for(int i = 0; i < agents; i++) allAgentsIndexRandomized.set(i, 1);
             // adding the sick agents to arraylist(represented as 2's)
-            for(int i = 0; i < initialSick; i++) allAgentsIndexRandomized.set(i, 2);
+            for(int i = 0; i < initialSick + initialImmune; i++) {
+                if(i < initialSick) {
+                    allAgentsIndexRandomized.set(i, 2);
+                }
+                else{
+                    allAgentsIndexRandomized.set(i, 3);
+                }
+            }
 
             //randomizing Arraylist order
             Collections.shuffle(allAgentsIndexRandomized);
 
+            System.out.println(allAgentsIndexRandomized.size());
             int agentNum = 0;
             int index = 0;
             for(int i = 0; i < rows+1; i++){
@@ -301,14 +335,21 @@ public class Field {
                     // non-sick agent is added to grid position
                     if(allAgentsIndexRandomized.get(index) == 1) {
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
-                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic);
+                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, false);
                         allAgents.add(agent);
                         agentNum++;
                     }
                     // sick agent is added to grid position
                     else if(allAgentsIndexRandomized.get(index) == 2){
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
-                                exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic);
+                                exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic, false);
+                        allAgents.add(agent);
+                        agentNum++;
+                    }
+                    // initial immune agent is added to grid
+                    else if(allAgentsIndexRandomized.get(index) == 3){
+                        Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
+                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, true);
                         allAgents.add(agent);
                         agentNum++;
                     }
@@ -367,6 +408,7 @@ public class Field {
         }
     }
 
+    // stops all agents
     public static void stopAgents(ArrayList<Agent> allAgents){
         for(int i = 0; i < allAgents.size(); i++){
             allAgents.get(i).stop();

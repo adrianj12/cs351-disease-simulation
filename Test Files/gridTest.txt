@@ -6,3 +6,4 @@ recover 0.90
 initialsick 2
 grid 8 12
 asymptomatic 0.10
+initialimmune 3
