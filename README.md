@@ -25,8 +25,8 @@ your only option is to restart a new simulation.
 One configuration setting per line.
 Each line generally follows an `optionname [option1] [option2]...` format.
 
-    dimensions width height
-Width and height of simulation field in pixels. *Default: 200*
+    dimensions n m
+Width and height of simulation field in pixels (100 < n < 770). *Default: 200 for both*
 <br /><br />
 
     exposuredistance n
@@ -65,8 +65,12 @@ Probability `p` that an agent will be asymptomatic (0.00 - 1.00), meaning that a
 without being sick themselves. Asymptomatic agents will always become immune.  *Default: 0.05*
 <br /><br />
 
-    initialimmune
+    initialimmune n
 Number `n` of agents that are initially immune to the disease. *Default: 2*
+<br /><br />
+
+    longterm p
+Probability `p` that an agent will recover from disease with long term health side affects. (0.00 - 1.00) *Default: 0.10*
 <br /><br />
 
 #### Layouts:
@@ -123,9 +127,20 @@ Orange is a asymptomatic agent. Which means that they are carrying and passing o
 a light blue agent is an agent that has been infected with the disease and recovered.
 <br /><br />
 
+    darker blue
+a darker blue agent is an agent that has been infected with the disease and recovered, but will sustain long term health side affects from the disease.
+<br /><br />
+
     black
 an agent killed by the disease.
 <br /><br />
+
+### Assignment required additional features:
+    1. rerun simulation
+    2. initial immunity
+    3. display history
+    4. additional states (healthy, longterm health effects, asymptomatic)
+
 
 
 ### More Documentation

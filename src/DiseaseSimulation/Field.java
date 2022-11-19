@@ -63,6 +63,7 @@ public class Field {
         int initialSick = 1;
         double asymptomatic = 0.05;
         int initialImmune = 2;
+        double longTermHealthIssues = 0.1;
 
         // determines play type of grid('g'), random('r'), or randomgrid('x'). default is random with 100 agents.
         char agentLocationType = 'r';
@@ -122,6 +123,9 @@ public class Field {
                     case("agents"):
                         agents = sc.nextInt();
                         break;
+                    case("longterm"):
+                        longTermHealthIssues = sc.nextInt();
+                        break;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -157,7 +161,7 @@ public class Field {
         this.columns = columns;
 
         createAgents(agentLocationType, width, height, exposureDistance, incubation, sickness, recover, rows, columns,
-                agents, initialSick, asymptomatic, initialImmune);
+                agents, initialSick, asymptomatic, initialImmune, longTermHealthIssues);
 
     }
 
@@ -193,7 +197,7 @@ public class Field {
      */
     private void createAgents(char agentLocationType, int width, int height, int exposureDistance, int incubation,
                                      int sickness, double recover, int rows, int columns, int agents, int initialSick,
-                                    double asymtomatic, int initialImmune) {
+                                    double asymtomatic, int initialImmune, double longTermHealthIssues) {
 
         this.allAgents = new ArrayList<Agent>();
 
@@ -244,17 +248,20 @@ public class Field {
                             // sick agent is created
                             if (initialSick != 0 && sickAgentIndexes.contains(agentNum)) {
                                 agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
-                                        exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic, false);
+                                        exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic,
+                                        false, longTermHealthIssues);
                             }
                             // initially immune agent is added
                             else if (initialImmune != 0 && initialImmuneIndexes.contains(agentNum)) {
                                 agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
-                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, true);
+                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic,
+                                        true, longTermHealthIssues);
                             }
                             // non-sick agent is created
                             else {
                                 agent = new Agent((int) (j * singleColumnWidth), (int) (height - (i * singleRowHeight)),
-                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, false);
+                                        exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic,
+                                        false, longTermHealthIssues);
                             }
                             allAgents.add(agent);
                             agentNum++;
@@ -275,7 +282,7 @@ public class Field {
                 int agentWidth = rand.nextInt(width+1);
                 int agentHeight = rand.nextInt(height+1);
                 Agent agent = new Agent(agentWidth, agentHeight, exposureDistance, incubation, sickness, recover,
-                        false, i, asymtomatic, false);
+                        false, i, asymtomatic, false, longTermHealthIssues);
                 allAgents.add(agent);
             }
 
@@ -335,21 +342,24 @@ public class Field {
                     // non-sick agent is added to grid position
                     if(allAgentsIndexRandomized.get(index) == 1) {
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
-                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, false);
+                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic,
+                                false, longTermHealthIssues);
                         allAgents.add(agent);
                         agentNum++;
                     }
                     // sick agent is added to grid position
                     else if(allAgentsIndexRandomized.get(index) == 2){
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
-                                exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic, false);
+                                exposureDistance, incubation, sickness, recover, true, agentNum, asymtomatic,
+                                false, longTermHealthIssues);
                         allAgents.add(agent);
                         agentNum++;
                     }
                     // initial immune agent is added to grid
                     else if(allAgentsIndexRandomized.get(index) == 3){
                         Agent agent = new Agent((int)(j * singleColumnWidth), (int)(height - (i * singleRowHeight)),
-                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic, true);
+                                exposureDistance, incubation, sickness, recover, false, agentNum, asymtomatic,
+                                true, longTermHealthIssues);
                         allAgents.add(agent);
                         agentNum++;
                     }
@@ -373,10 +383,13 @@ public class Field {
     public void startAgents() {
 
         System.out.println("\nStarting agents...\n");
+        for(int i = 0; i < allAgents.size(); i++) {
+            allAgents.get(i).start();
+        }
 
-        for(int i = 0; i < allAgents.size(); i++){
-            if(allAgents.get(i).sick) {
-                allAgents.get(i).start();
+        for (int i = 0; i < allAgents.size(); i++) {
+            if (allAgents.get(i).sick) {
+                allAgents.get(i).in.add(1);
             }
         }
     }
@@ -409,7 +422,7 @@ public class Field {
     }
 
     // stops all agents
-    public static void stopAgents(ArrayList<Agent> allAgents){
+    public void stopAgents(ArrayList<Agent> allAgents){
         for(int i = 0; i < allAgents.size(); i++){
             allAgents.get(i).stop();
         }

@@ -50,6 +50,7 @@ public class GUI extends Application {
     private static final Color immune = Color.LIGHTBLUE;
     private static final Color dead = Color.BLACK;
     private static final Color asymptomatic = Color.ORANGE;
+    private static final Color longTermHealthEffects = Color.CORNFLOWERBLUE;
 
     public GUI() { }
 
@@ -211,6 +212,8 @@ public class GUI extends Application {
             state = State.Dead;
         } else if (agent.immune) {
             state = State.Immune;
+        } else if (agent.longTermEffects) {
+            state = State.LongTermHealthEffects;
         } else if (agent.vulnerable) {
             state = State.Vulnerable;
         }else if (agent.asymptomatic) {
@@ -236,8 +239,8 @@ public class GUI extends Application {
         Sick(sick),
         Asymptomatic(asymptomatic),
         Dead(dead),
-        Immune(immune);
-
+        Immune(immune),
+        LongTermHealthEffects(longTermHealthEffects);
         public final Color color;
 
         State(Color color) {
